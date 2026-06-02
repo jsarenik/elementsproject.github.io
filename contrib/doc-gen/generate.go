@@ -106,7 +106,7 @@ func main() {
 				for i, line := range trim {
 					trim[i] = strings.TrimRight(line, " ")
 				}
-				desc := strings.Join(trim, "\n")
+				desc := strings.TrimRight(strings.Join(trim, "\n"), "\n")
 				comm := Command{
 					Name:        name,
 					Description: desc,
