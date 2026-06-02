@@ -102,7 +102,11 @@ func main() {
 				lastGroupName = strings.ToLower(line[3 : len(line)-3])
 			} else {
 				name := strings.Split(line, " ")[0]
-				desc := run("help", name)
+				trim := strings.Split(run("help", name), "\n")
+				for i, line := range trim {
+					trim[i] = strings.TrimRight(line, " ")
+				}
+				desc := strings.Join(trim, "\n")
 				comm := Command{
 					Name:        name,
 					Description: desc,
