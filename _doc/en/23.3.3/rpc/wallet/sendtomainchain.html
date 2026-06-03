@@ -1,0 +1,32 @@
+---
+layout: doc
+name: sendtomainchain
+elemversion: 23.3.3
+elemgroup: wallet
+permalink: /en/doc/23.3.3/rpc/wallet/sendtomainchain/
+---
+
+sendtomainchain "address" amount ( subtractfeefromamount verbose )
+
+Sends Liquid funds to the Bitcoin mainchain, through the federated withdraw mechanism. The wallet internally generates the returned `bitcoin_address` via `bitcoin_descriptor` and `bip32_counter` previously set in `initpegoutwallet`. The counter will be incremented upon successful send, avoiding address re-use.
+
+Requires wallet passphrase to be set with walletpassphrase call if wallet is encrypted.
+
+Arguments:
+1. address                  (string, required) Must be "". Only for non-PAK `sendtomainchain` compatibility.
+2. amount                   (numeric or string, required) The amount being sent to `bitcoin_address`.
+3. subtractfeefromamount    (boolean, optional, default=false) The fee will be deducted from the amount being pegged-out.
+4. verbose                  (boolean, optional, default=false) If true, return extra information about the transaction.
+
+Result:
+{                                  (json object)
+  "bitcoin_address" : "str",       (string) destination address on Bitcoin mainchain
+  "txid" : "hex",                  (string) transaction ID of the resulting Liquid transaction
+  "fee reason" : "str",            (string) If verbose is set to true, the Liquid transaction fee reason
+  "bitcoin_descriptor" : "str",    (string) xpubkey of the child destination address
+  "bip32_counter" : "str"          (string) derivation counter for the `bitcoin_descriptor`
+}
+
+Examples:
+> elements-cli sendtomainchain "" 0.1
+> curl --user myusername --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "sendtomainchain", "params": ["" 0.1]}' -H 'content-type: text/plain;' http://127.0.0.1:7041/
