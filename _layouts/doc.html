@@ -47,15 +47,24 @@ layout: default
 
       <h2>Documentation for the following versions is available:</h2>
       {% assign groups = site.doc | sort: "elemversion" | reverse | group_by:"elemversion" %}
+      {% assign prefixes_to_skip = "index,23.2,22.,0." | split: "," %}
       <ul>
         {% for group in groups %}
-          {% if group.name != "index" %}
+          {% assign skip_this_version = false %}
+          {% for prefix in prefixes_to_skip %}
+            {% assign test_string = group.name | remove_first: prefix %}
+            {% if test_string != group.name %}
+              {% assign skip_this_version = true %}
+            {% endif %}
+          {% endfor %}
+
+          {% unless skip_this_version %}
             {% for article in group.items %}
               {% if article.name == "index" %}
                 <li><p><a href="{{article.url}}rpc/">{{group.name}}</a></p></li>
               {% endif %}
             {% endfor %}
-          {% endif %}
+          {% endunless %}
         {% endfor %}
       </ul>
 
